@@ -45,18 +45,20 @@ PUBLIC TOILET
 6. **_commit 메시지는 최선과 영혼을 담아서 소울풀하게 작성한다._**
 7. 코드 충돌 시 임의로 코드를 수정하지 않고, 해당 개발 담당자와 의논 후 충돌을 제거한다.
 8. **_기능 개발을 하기 위해 master를 내려받을 때  개발 기능을 팀원에게 명시하여 충돌을 최대한 피한다._**  
+9. ** pull과 push는 프로젝트 최상위 디렉토리에서 실행**
 [개발 가이드 라인](#개발_가이드_라인)
 
   
 ## pull
 1. 개발환경(툴, OS, IDE)에 관계 없이 적용
-2. 새로운 프로젝트 생성
-3. 프로젝트 최상위 디렉토리에서 내려받기  
+2. 프로젝트 최상위 디렉토리에서 내려받기(파일명 >> public_toilet)  
+3. 해당 디렉토리(public_toilet)에 새로운 프로젝트 생성
 ```
 > git init
 > git remote add origin https://github.com/KimDaeIl/public_toilet.git
 > git pull origin master
 ```  
+** 프로젝트 이름은 레파지토리 이름과 같다 **
 
    
 ## push
