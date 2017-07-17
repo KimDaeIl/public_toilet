@@ -7,29 +7,39 @@ import java.util.regex.Pattern;
  */
 public class Util {
 
-    public static boolean isNull(Object obj) {
-        return obj == null;
-    }
+	public static boolean isEqualsNull(String str) {
+		if (isNull(str)) {
+			return true;
+		}
 
-    public static boolean isValidStringLength(String str, int length) {
-        return isValidStringLength(str, length, length);
-    }
+		if (str.equalsIgnoreCase("null"))
+			return true;
 
-    public static boolean isValidStringLength(String str, int min, int max) {
-        if (isNull(str)) {
-            return false;
-        }
+		return false;
+	}
 
-        if (str.length() < min || max < str.length()) {
-            return false;
-        }
+	public static boolean isNull(Object obj) {
+		return obj == null;
+	}
 
-        return true;
-    }
+	public static boolean isValidStringLength(String str, int length) {
+		return isValidStringLength(str, length, length);
+	}
 
+	public static boolean isValidStringLength(String str, int min, int max) {
+		if (isNull(str)) {
+			return false;
+		}
 
-    public static boolean isMatched(String regex, String inputTxt) {
-        return Pattern.matches(regex, inputTxt);
-    }
+		if (str.length() < min || max < str.length()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public static boolean isMatched(String regex, String inputTxt) {
+		return Pattern.matches(regex, inputTxt);
+	}
 
 }

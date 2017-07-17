@@ -56,7 +56,10 @@ public class MemberController extends HttpServlet implements IController {
 			isDuplicatedId(req, res);
 			break;
 
-		case "update":
+		case "logout":
+			logout(req, res);
+			break;
+		case "delete":
 			break;
 
 		default:
@@ -105,6 +108,19 @@ public class MemberController extends HttpServlet implements IController {
 
 		if (service.isDuplicatedId(id))
 			;// TODO: 어떻게 만들어야 하나...ㅋㅋ
+	}
+
+	private void logout(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		HttpSession session = req.getSession(false);
+
+		if (session != null) {
+			if (Util.isNull(session.getAttribute("member"))) {
+				session.removeAttribute("member");
+				session.invalidate();
+			}
+		}
+
+		res.sendRedirect("index.jsp");
 	}
 
 	// TODO: ㅇㅇ

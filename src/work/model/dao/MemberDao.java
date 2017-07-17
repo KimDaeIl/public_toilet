@@ -95,7 +95,7 @@ public class MemberDao extends BaseDao {
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement("SELECT * FROM members WHERE member_id=?");
-			pstmt.setString(1, id);
+			pstmt.setString(1, id.toUpperCase());
 
 			rs = pstmt.executeQuery();
 
@@ -119,4 +119,9 @@ public class MemberDao extends BaseDao {
 		return null;
 
 	}
+
+	// public int delete(String id) {
+	//
+	// return null;
+	// }
 }

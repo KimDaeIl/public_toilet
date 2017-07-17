@@ -13,8 +13,6 @@ public class MemberService {
 
 	public Member signUp(String id, String pw, String nickname) {
 
-		System.out.println(id);
-		System.out.println(pw);
 		if (isValidId(id) && isValidPw(pw) && isValidNickname(nickname)) {
 
 			Member member = new Member(id.toUpperCase(), pw.toUpperCase(), nickname.toUpperCase());
@@ -40,7 +38,7 @@ public class MemberService {
 
 	public boolean isDuplicatedId(String id) {
 		if (isValidId(id)) {
-			return Util.isNull(dao.selectMemberId(id.toUpperCase()));
+			return !Util.isEqualsNull(dao.selectMemberId(id));
 		}
 
 		return false;

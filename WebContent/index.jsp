@@ -17,10 +17,13 @@
 	<%
 		MemberService service = new MemberService();
 
-		Member member = service.login("user01", "password01");
+		//service.login("user01", "password01");
+		//Member member = service.signUp(null, "password01", "Test");
+		String id = new String("user11");
 	%>
 
-	<%=member.getMemberId()%>
+	<%=id%><br />
+	<%=service.isDuplicatedId(id)%>
 
 
 </body>
