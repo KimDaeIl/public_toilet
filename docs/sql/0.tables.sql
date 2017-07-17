@@ -73,6 +73,7 @@ CREATE SEQUENCE seq_toilet_id
 CREATE TABLE toilets(
   borough_id	NUMBER NOT NULL,
   id	NUMBER NOT NULL,
+  name VARCHAR2(128) NOT NULL,
   type	VARCHAR2(32) NOT NULL,
   is_common	CHAR(2) DEFAULT 'N' NOT NULL,
   count_man_feces	NUMBER(2) DEFAULT 0 NOT NULL,
