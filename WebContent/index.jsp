@@ -5,7 +5,7 @@
   Time: PM 11:59
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=euc-kr" language="java" %>
 <html>
   <head>
     <title>$Title$</title>
