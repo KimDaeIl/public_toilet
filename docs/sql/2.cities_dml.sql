@@ -1,3 +1,3 @@
-INSERT INTO cities(id, name) values(seq_city_id.NEXTVAL, '부산');
+INSERT INTO cities(id, name) values(seq_city_id.NEXTVAL, '부산시');
 
 COMMIT;

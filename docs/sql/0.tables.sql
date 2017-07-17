@@ -21,9 +21,9 @@ CREATE SEQUENCE seq_user_id
 
 CREATE TABLE members(
   id	NUMBER NOT NULL,
-  member_id	VARCHAR2(16) NOT NULL,
-  member_pw	VARCHAR2(16) NOT NULL,
-  nickname	VARCHAR2(16) NOT NULL,
+  member_id	VARCHAR2(32) NOT NULL,
+  member_pw	VARCHAR2(32) NOT NULL,
+  nickname	VARCHAR2(32) NOT NULL,
   deleted_at DATE,
   entry_date	DATE DEFAULT SYSDATE NOT NULL
 );
@@ -39,7 +39,7 @@ CREATE SEQUENCE seq_city_id
 
 CREATE TABLE cities(
   id	NUMBER NOT NULL,
-  name	VARCHAR2(5) NOT NULL,
+  name	VARCHAR2(10) NOT NULL,
   reg_date	DATE DEFAULT SYSDATE NOT NULL
 );
 ALTER TABLE cities ADD (CONSTRAINT pk_cities PRIMARY KEY(id));
@@ -55,7 +55,7 @@ CREATE SEQUENCE seq_borough_id
 CREATE TABLE boroughs(
   city_id	NUMBER NOT NULL,
   id	NUMBER NOT NULL,
-  name	VARCHAR2(16) NOT NULL,
+  name	VARCHAR2(32) NOT NULL,
   reg_date	DATE DEFAULT SYSDATE NOT NULL
 );
 ALTER TABLE boroughs ADD (CONSTRAINT pk_boroughs PRIMARY KEY(id));
@@ -73,8 +73,8 @@ CREATE SEQUENCE seq_toilet_id
 CREATE TABLE toilets(
   borough_id	NUMBER NOT NULL,
   id	NUMBER NOT NULL,
-  type	VARCHAR2(16) NOT NULL,
-  is_common	CHAR(1) DEFAULT 'N' NOT NULL,
+  type	VARCHAR2(32) NOT NULL,
+  is_common	CHAR(2) DEFAULT 'N' NOT NULL,
   count_man_feces	NUMBER(2) DEFAULT 0 NOT NULL,
   count_man_urine	NUMBER(2) DEFAULT 0 NOT NULL,
   count_man_feces_with_handicap	NUMBER(2) DEFAULT 0 NOT NULL,
@@ -84,14 +84,14 @@ CREATE TABLE toilets(
   count_lady_feces	NUMBER(2) DEFAULT 0 NOT NULL,
   count_lady_feces_with_handicap	NUMBER(2) DEFAULT 0 NOT NULL,
   count_lady_child_feces	NUMBER(2) DEFAULT 0 NOT NULL,
-  manage_agency	VARCHAR2(16) NOT NULL,
-  phone	VARCHAR2(16),
+  manage_agency	VARCHAR2(32) NOT NULL,
+  phone	VARCHAR2(32),
   open_time	VARCHAR2(64),
-  installation_date	VARCHAR2(16),
+  installation_date	VARCHAR2(32),
   lat	NUMBER(9,6) NOT NULL,
   lon	NUMBER(9,6) NOT NULL,
-  std_date	VARCHAR2(10) NOT NULL,
-  phone2	VARCHAR2(16),
+  std_date	VARCHAR2(20) NOT NULL,
+  phone2	VARCHAR2(32),
   count_review	NUMBER DEFAULT 0 NOT NULL,
   sum_review	NUMBER DEFAULT 0 NOT NULL,
   reg_date	DATE DEFAULT SYSDATE NOT NULL
