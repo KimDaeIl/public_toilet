@@ -1,1 +1,1 @@
-public class SampleDto{}
+package work.model.dto;public class SampleDto {}
