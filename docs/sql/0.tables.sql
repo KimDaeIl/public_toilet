@@ -55,7 +55,7 @@ CREATE SEQUENCE seq_borough_id
 CREATE TABLE boroughs(
   city_id	NUMBER NOT NULL,
   id	NUMBER NOT NULL,
-  name	VARCHAR2(32) NOT NULL,
+  name	VARCHAR2(16) NOT NULL,
   reg_date	DATE DEFAULT SYSDATE NOT NULL
 );
 ALTER TABLE boroughs ADD (CONSTRAINT pk_boroughs PRIMARY KEY(id));
@@ -75,7 +75,7 @@ CREATE TABLE toilets(
   id	NUMBER NOT NULL,
   name VARCHAR2(128) NOT NULL,
   type	VARCHAR2(32) NOT NULL,
-  is_common	CHAR(2) DEFAULT 'N' NOT NULL,
+  is_common	CHAR(1) DEFAULT 'N' NOT NULL,
   count_man_feces	NUMBER(2) DEFAULT 0 NOT NULL,
   count_man_urine	NUMBER(2) DEFAULT 0 NOT NULL,
   count_man_feces_with_handicap	NUMBER(2) DEFAULT 0 NOT NULL,
@@ -91,8 +91,8 @@ CREATE TABLE toilets(
   installation_date	VARCHAR2(32),
   lat	NUMBER(9,6) NOT NULL,
   lon	NUMBER(9,6) NOT NULL,
-  std_date	VARCHAR2(20) NOT NULL,
-  phone2	VARCHAR2(32),
+  std_date	VARCHAR2(16) NOT NULL,
+  phone2	VARCHAR2(16),
   count_review	NUMBER DEFAULT 0 NOT NULL,
   sum_review	NUMBER DEFAULT 0 NOT NULL,
   reg_date	DATE DEFAULT SYSDATE NOT NULL
@@ -106,7 +106,7 @@ CREATE INDEX idx_toilet_borough_id ON toilets(borough_id);
 CREATE TABLE reviews(
   toilet_id	NUMBER NOT NULL,
   writer_id	NUMBER NOT NULL,
-  review	VARCHAR2(255) NOT NULL,
+  review	VARCHAR2(200) NOT NULL,
   score	NUMBER(2) NOT NULL,
   reg_date	DATE DEFAULT SYSDATE NOT NULL
 );
