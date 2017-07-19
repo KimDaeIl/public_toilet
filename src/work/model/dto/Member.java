@@ -5,6 +5,8 @@ package work.model.dto;
  */
 public class Member {
 
+
+public class Member {
 	private int id;
 	private String memberId;
 	private String memberPw;
