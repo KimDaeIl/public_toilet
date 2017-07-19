@@ -109,7 +109,7 @@ public class ReviewDao extends BaseDao {
 
 		try {
 			conn = getConnection();
-			pstmt = conn.prepareStatement("insert into review(toilet_id, writer_id, review, score) values(?,?,?,?)");
+			pstmt = conn.prepareStatement("INSERT INTO REVIEWS(toilet_id, writer_id, review, score) VALUES(?,?,?,?)");
 			pstmt.setInt(1, toiletId);
 			pstmt.setInt(2, writerId);
 			pstmt.setString(3, review);
@@ -118,6 +118,14 @@ public class ReviewDao extends BaseDao {
 			result = pstmt.executeUpdate();
 
 			if (result > 0) {
+
+				pstmt = conn.prepareStatement(
+						"UPDATE toilets SET count_review = count_review + 1, sum_review = sum_review + ? WHERE id = ?");
+				pstmt.setInt(1, score);
+				pstmt.setInt(2, toiletId);
+
+				result = pstmt.executeUpdate();
+
 				conn.commit();
 			}
 
@@ -136,12 +144,47 @@ public class ReviewDao extends BaseDao {
 
 		return result;
 	}
-
+	
 	public int update(int toiletId, int writerId, String review, int score) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
 		int result = 0;
+
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement("UPDATE reviews SET review=?,score=score+? WHERE toilet_id=? and writer_id=?");
+			pstmt.setString(1, review);
+			pstmt.setInt(2, score);
+			pstmt.setInt(3, toiletId);
+			pstmt.setInt(4, writerId);
+
+			result = pstmt.executeUpdate();
+
+			if (result > 0) {
+
+				pstmt = conn.prepareStatement(
+						"UPDATE toilets SET sum_review = sum_review + ? WHERE id = ?");
+				pstmt.setInt(1, score);
+				pstmt.setInt(2, toiletId);
+
+				result = pstmt.executeUpdate();
+
+				conn.commit();
+			}
+
+		} catch (SQLException e) {
+			System.out.println("review > dao > addReview");
+			e.printStackTrace();
+
+			try {
+				conn.rollback();
+
+			} catch (SQLException ee) {
+				System.out.println("review > dao > addReview > catch > rollback()");
+				e.printStackTrace();
+			}
+		}
 
 		return result;
 	}

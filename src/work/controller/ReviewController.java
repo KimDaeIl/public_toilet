@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import work.Util.Util;
+import work.model.dto.Member;
 import work.model.dto.ReviewList;
 import work.model.service.ReviewService;
 
@@ -80,7 +81,7 @@ public class ReviewController extends HttpServlet implements IController {
 
 			break;
 		case "updateReview":
-//			updateReview(req, res);
+			updateReview(req, res);
 			break;
 
 		default:
@@ -109,23 +110,63 @@ public class ReviewController extends HttpServlet implements IController {
 		 */
 		HttpSession session = req.getSession(false);
 
-		if (!Util.isNull(session) && !Util.isNull(session.getAttribute("memberId"))) {
+		if (!Util.isNull(session) && !Util.isNull(session.getAttribute("member"))) {
+
+			// try {
+
+			// if (((Member) session.getAttribute("member")).getId() == Integer
+			// .parseInt(req.getParameter("writer_id"))) {
 
 			int result = service.addReview(req.getParameter("toilet_id"), req.getParameter("writer_id"),
 					req.getParameter("review"), req.getParameter("score"));
 
 			if (result > 0) {
-
+				// 화장실 상세 페이지 재호출해서 업데이트
 				return;
 			}
-
-		} else {
-			res.sendRedirect("error.jsp");
-
+			//
+			// }
+			//
+			// } catch (NumberFormatException e) {
+			// System.out.println("review > service > addreview >
+			// parseInt(writer_id)");
+			// e.printStackTrace();
+			//
+			// }
 		}
+
+		res.sendRedirect("error.jsp");
+
 	}
 
 	private void updateReview(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		HttpSession session = req.getSession(false);
+
+		if (!Util.isNull(session) && !Util.isNull(session.getAttribute("member"))) {
+
+			// try {
+			//
+			// if (((Member) session.getAttribute("member")).getId() == Integer
+			// .parseInt(req.getParameter("writer_id"))) {
+			int result = service.updateReview(req.getParameter("toilet_id"), req.getParameter("writer_id"),
+					req.getParameter("review"), req.getParameter("score"));
+
+			if (result > 0) {
+				// 화장실 상세 페이지 재호출해서 업데이트
+
+				return;
+
+			}
+			// }
+			// } catch (NumberFormatException e) {
+			// System.out.println("review > service > updateReview >
+			// parseInt(writer_id)");
+			// e.printStackTrace();
+			//
+			// }
+		}
+
+		res.sendRedirect("error.jsp");
 
 	}
 }

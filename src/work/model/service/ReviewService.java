@@ -46,7 +46,14 @@ public class ReviewService {
 			review = review.trim();
 			scoreString = scoreString.trim();
 
-			if (!Util.isValidStringLength(review, 10, 100)) {
+			System.out.println("--------------------");
+			System.out.println(toiletNum);
+			System.out.println(writerNum);
+			System.out.println(review);
+			System.out.println(scoreString);
+			System.out.println("--------------------");
+
+			if (Util.isValidStringLength(review, 10, 100)) {
 				try {
 
 					int toiletId = Integer.parseInt(toiletNum);
@@ -61,6 +68,43 @@ public class ReviewService {
 						}
 
 						return dao.add(toiletId, writerId, review, score);
+					}
+
+				} catch (NumberFormatException e) {
+					System.out.println("review > service > addReview");
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return 0;
+	}
+
+	public int updateReview(String toiletNum, String writerNum, String review, String scoreString) {
+		if (!isDataNull(toiletNum, writerNum, review, scoreString)) {
+
+			toiletNum = toiletNum.trim();
+			writerNum = writerNum.trim();
+			review = review.trim();
+			scoreString = scoreString.trim();
+
+			System.out.println("--------------------");
+			System.out.println(toiletNum);
+			System.out.println(writerNum);
+			System.out.println(review);
+			System.out.println(scoreString);
+			System.out.println("--------------------");
+
+			if (Util.isValidStringLength(review, 10, 100)) {
+				try {
+
+					int toiletId = Integer.parseInt(toiletNum);
+					int writerId = Integer.parseInt(writerNum);
+					int score = Integer.parseInt(scoreString);
+
+					if (Util.isValidId(toiletId) && Util.isValidId(writerId)) {
+
+						return dao.update(toiletId, writerId, review, score);
 					}
 
 				} catch (NumberFormatException e) {

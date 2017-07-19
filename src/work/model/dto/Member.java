@@ -63,4 +63,23 @@ public class Member {
 	public void setEntryDate(String entryDate) {
 		this.entryDate = entryDate;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Member [id=");
+		builder.append(id);
+		builder.append(", memberId=");
+		builder.append(memberId);
+		builder.append(", memberPw=");
+		builder.append(memberPw);
+		builder.append(", nickname=");
+		builder.append(nickname);
+		builder.append(", entryDate=");
+		builder.append(entryDate);
+		builder.append("]");
+		return builder.toString();
+	}
+	
+	
 }
