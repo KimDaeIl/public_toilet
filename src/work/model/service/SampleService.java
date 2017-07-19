@@ -1,1 +1,0 @@
-package work.model.service;public class SampleService {}

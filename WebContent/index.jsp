@@ -5,12 +5,17 @@
   Time: PM 11:59
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=euc-kr" language="java" %>
+<%@page import="work.model.dto.Toilet"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="work.model.service.ToiletService"%>
+<%@ page contentType="text/html;charset=euc-kr" language="java"%>
 <html>
-  <head>
-    <title>$Title$</title>
-  </head>
-  <body>
-  $END$
-  </body>
+<head>
+<title>$Title$</title>
+</head>
+<body>
+ddd
+<%out.println("ddd"); %>
+
+</body>
 </html>
