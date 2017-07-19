@@ -61,7 +61,7 @@
         width: 900px;
         padding: 20px;
         margin-bottom: 20px;
-        border: 1px solid #bcbcbc;
+        border: 0px solid #bcbcbc;
       }
       #jb-footer {
      	background-color:#f9fafc;
