@@ -12,6 +12,7 @@ public class Util {
 			return true;
 		}
 
+		str = str.trim();
 		if (str.equalsIgnoreCase("null"))
 			return true;
 
@@ -31,6 +32,7 @@ public class Util {
 			return false;
 		}
 
+		str = str.trim();
 		if (str.length() < min || max < str.length()) {
 			return false;
 		}
@@ -38,8 +40,12 @@ public class Util {
 		return true;
 	}
 
-	public static boolean isMatched(String regex, String inputTxt) {
-		return Pattern.matches(regex, inputTxt);
+	public static boolean isMatched(String regex, String inputStr) {
+		if (!(isNull(regex) && isNull(inputStr))) {
+			return Pattern.matches(regex, inputStr);
+		}
+
+		return false;
 	}
 
 	public static boolean isValidId(int id) {

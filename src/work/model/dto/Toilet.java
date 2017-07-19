@@ -1,6 +1,9 @@
 package work.model.dto;
 
-public class Toilet {
+import java.io.Serializable;
+
+
+public class Toilet implements Serializable {
 
 	public Toilet() {
 	}
