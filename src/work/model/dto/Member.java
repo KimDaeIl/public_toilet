@@ -4,9 +4,6 @@ package work.model.dto;
  * Created by KimDaeil on 2017. 7. 15..
  */
 public class Member {
-
-
-public class Member {
 	private int id;
 	private String memberId;
 	private String memberPw;
