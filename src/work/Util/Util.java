@@ -42,4 +42,8 @@ public class Util {
 		return Pattern.matches(regex, inputTxt);
 	}
 
+	public static boolean isValidId(int id) {
+		return id > 0;
+	}
+
 }

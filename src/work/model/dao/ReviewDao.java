@@ -3,6 +3,7 @@ package work.model.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -81,10 +82,9 @@ public class ReviewDao extends BaseDao {
 				rTemp.setRegDate(rs.getString("_reg_date"));
 				reviewList.add(rTemp);
 			}
-			
+
 			review.setList(reviewList);
 			review.setToilet(tTemp);
-			
 
 		} catch (SQLException e) {
 			System.out.println("review > dao > getToiletReivews");
@@ -99,5 +99,50 @@ public class ReviewDao extends BaseDao {
 
 		return review;
 
+	}
+
+	public int add(int toiletId, int writerId, String review, int score) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		int result = 0;
+
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement("insert into review(toilet_id, writer_id, review, score) values(?,?,?,?)");
+			pstmt.setInt(1, toiletId);
+			pstmt.setInt(2, writerId);
+			pstmt.setString(3, review);
+			pstmt.setInt(4, score);
+
+			result = pstmt.executeUpdate();
+
+			if (result > 0) {
+				conn.commit();
+			}
+
+		} catch (SQLException e) {
+			System.out.println("review > dao > addReview");
+			e.printStackTrace();
+
+			try {
+				conn.rollback();
+
+			} catch (SQLException ee) {
+				System.out.println("review > dao > addReview > catch > rollback()");
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+
+	public int update(int toiletId, int writerId, String review, int score) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		int result = 0;
+
+		return result;
 	}
 }

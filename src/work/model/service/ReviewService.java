@@ -26,7 +26,6 @@ public class ReviewService {
 				int toiletId = Integer.parseInt(toiletNum);
 
 				if (toiletId > 0) {
-					System.out.println(toiletId);
 					reviewList = dao.getToiletReivews(toiletId);
 				}
 			} catch (NumberFormatException e) {
@@ -36,5 +35,51 @@ public class ReviewService {
 		}
 
 		return reviewList;
+	}
+
+	public int addReview(String toiletNum, String writerNum, String review, String scoreString) {
+
+		if (!isDataNull(toiletNum, writerNum, review, scoreString)) {
+
+			toiletNum = toiletNum.trim();
+			writerNum = writerNum.trim();
+			review = review.trim();
+			scoreString = scoreString.trim();
+
+			if (!Util.isValidStringLength(review, 10, 100)) {
+				try {
+
+					int toiletId = Integer.parseInt(toiletNum);
+					int writerId = Integer.parseInt(writerNum);
+					int score = Integer.parseInt(scoreString);
+
+					if (Util.isValidId(toiletId) && Util.isValidId(writerId)) {
+						if (score < 1) {
+							score = 1;
+						} else if (score > 10) {
+							score = 10;
+						}
+
+						return dao.add(toiletId, writerId, review, score);
+					}
+
+				} catch (NumberFormatException e) {
+					System.out.println("review > service > addReview");
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return 0;
+	}
+
+	private boolean isDataNull(String toiletNum, String writerNum, String review, String scoreString) {
+		if (Util.isEqualsNull(toiletNum) || Util.isEqualsNull(writerNum) || Util.isEqualsNull(review)
+				|| Util.isEqualsNull(scoreString)) {
+			return true;
+		}
+
+		return false;
+
 	}
 }
