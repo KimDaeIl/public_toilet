@@ -389,5 +389,4 @@ public class Toilet implements Serializable {
 	// }
 	//
 	//
-
 }

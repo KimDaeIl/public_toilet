@@ -48,4 +48,8 @@ public class Util {
 		return false;
 	}
 
+	public static boolean isValidId(int id) {
+		return id > 0;
+	}
+
 }
