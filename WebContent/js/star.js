@@ -6,7 +6,7 @@ var $star = $(".star-input"),
 	
   	$(document)
 	.on("focusin", ".star-input>.input", 
-		function(){
+		function(){;
    		 $(this).addClass("focus");
  	})
 		 

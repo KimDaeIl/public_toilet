@@ -17,7 +17,6 @@ public class ReviewService {
 
 	public ReviewList getReviews(String toiletNum) {
 		ReviewList reviewList = new ReviewList();
-		System.out.println(toiletNum);
 
 		if (!Util.isEqualsNull(toiletNum)) {
 			toiletNum = toiletNum.trim();
@@ -33,6 +32,32 @@ public class ReviewService {
 				e.printStackTrace();
 				reviewList.clear();
 			}
+		}
+
+		return reviewList;
+	}
+
+	public ReviewList getReviewPage(String pageString, String toiletNum) {
+		ReviewList reviewList = new ReviewList();
+		
+		if (!Util.isEqualsNull(pageString) && !Util.isEqualsNull(toiletNum)) {
+			toiletNum = toiletNum.trim();
+			pageString = pageString.trim();
+
+			try {
+				int page = Integer.parseInt(pageString);
+				int toiletId = Integer.parseInt(toiletNum);
+
+				if (Util.isValidId(page) && Util.isValidId(toiletId)) {
+					reviewList = dao.getReviewPage(toiletId, page);
+				}
+
+			} catch (NumberFormatException e) {
+				System.out.println("review > service > getReviewPage");
+				e.printStackTrace();
+
+			}
+
 		}
 
 		return reviewList;

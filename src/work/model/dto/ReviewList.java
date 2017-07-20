@@ -6,6 +6,8 @@ import work.Util.Util;
 
 public class ReviewList {
 
+	private int page;
+
 	private Toilet toilet;
 
 	private ArrayList<Review> list;
@@ -13,6 +15,11 @@ public class ReviewList {
 	public ReviewList() {
 		toilet = new Toilet();
 		list = new ArrayList<>();
+	}
+
+	public ReviewList(int page) {
+		this();
+		this.page = page;
 	}
 
 	public Toilet getToilet() {
@@ -31,6 +38,14 @@ public class ReviewList {
 		this.list = list;
 	}
 
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
 	public void clear() {
 		if (!Util.isNull(this.list)) {
 			this.list.clear();
@@ -39,25 +54,25 @@ public class ReviewList {
 		if (!Util.isNull(this.toilet)) {
 			this.toilet.setId(0);
 		}
-		
+
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("ReviewList {toilet=");
+		builder.append("{\"page\":");
+		builder.append(page);
+		builder.append(", \"toilet\":");
 		builder.append(toilet);
-		builder.append(", list=");
+		builder.append(", \"list\":");
 		builder.append("[");
-		for(Review r:list){
-			builder.append(r.toString()).append(",");
+		for (int i = 0; i < list.size(); i++) {
+			builder.append(list.get(i).toString()).append(",");
 		}
+		builder.replace(builder.length() - 1, builder.length(), "");
 		builder.append("]");
-		builder.append(list);
 		builder.append("}");
 		return builder.toString();
 	}
-	
-	
 
 }

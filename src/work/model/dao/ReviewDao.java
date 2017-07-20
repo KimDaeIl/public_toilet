@@ -16,12 +16,96 @@ import work.model.dto.Toilet;
 public class ReviewDao extends BaseDao {
 
 	public ReviewList getToiletReivews(int toiletId) {
+		ReviewList reviewList = new ReviewList();
+		Toilet toilet = getToilet(toiletId);
+
+		if (Util.isValidId(toilet.getId())) {
+			if (!Util.isNull(toilet) && Util.isValidId(toilet.getId())) {
+				reviewList = getReviews(toiletId, 1);
+			}
+
+			reviewList.setToilet(toilet);
+		}
+
+		return reviewList;
+	}
+
+	public ReviewList getReviewPage(int toiletId, int pageNum) {
+
+		return getReviewPage(toiletId, pageNum, 15);
+	}
+
+	public ReviewList getReviewPage(int toiletId, int page, int dataCount) {
+		ReviewList reviewList = new ReviewList();
+		Toilet toilet = getToilet(toiletId);
+
+		if (Util.isValidId(toilet.getId())) {
+			if (!Util.isNull(toilet) && Util.isValidId(toilet.getId())) {
+				reviewList = getReviews(toiletId, page);
+			}
+
+			reviewList.setToilet(toilet);
+		}
+
+		return reviewList;
+	}
+
+	private ReviewList getReviews(int toiletId, int pageNum) {
+		return getReviews(toiletId, pageNum, 15);
+	}
+
+	private ReviewList getReviews(int toiletId, int pageNum, int dataCount) {
 		Connection conn = null;
-		PreparedStatement toiletPstmt = null;
-		PreparedStatement reviewPstmt = null;
+		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
-		ReviewList review = new ReviewList();
+		ReviewList list = new ReviewList(pageNum);
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(
+					"select  m.id as m_id, m.nickname as m_nickname, review, score,r.reg_date as r_reg_date "
+							+ "from (select * "
+							+ "from(select ROWNUM as num, toilet_id,writer_id, review, score,reg_date "
+							+ "from reviews WHERE ROWNUM<=?)" + " where num>?) r, members m "
+							+ "where r.writer_id=m.id");
+
+			pstmt.setInt(1, pageNum * dataCount);
+			pstmt.setInt(2, (pageNum - 1) * dataCount);
+
+			rs = pstmt.executeQuery();
+
+			Review rTemp = null;
+			ArrayList<Review> reviewList = new ArrayList<>();
+			while (rs.next()) {
+				rTemp = new Review(rs.getInt("m_id"));
+				rTemp.setMemberNickname(rs.getString("m_nickname"));
+				rTemp.setReview(rs.getString("review"));
+				rTemp.setScore(rs.getInt("score"));
+				rTemp.setRegDate(rs.getString("r_reg_date"));
+				reviewList.add(rTemp);
+			}
+
+			list.setList(reviewList);
+
+		} catch (SQLException e) {
+			System.out.println("review > dao > gerReviewPage");
+			e.printStackTrace();
+
+			list.clear();
+		} finally {
+			close(rs, pstmt, conn);
+		}
+
+		return list;
+	}
+
+	private Toilet getToilet(int toiletId) {
+
+		Connection conn = null;
+		PreparedStatement toiletPstmt = null;
+		ResultSet rs = null;
+
+		Toilet tTemp = new Toilet();
 
 		try {
 			conn = getConnection();
@@ -33,10 +117,7 @@ public class ReviewDao extends BaseDao {
 			toiletPstmt.setInt(1, toiletId);
 			rs = toiletPstmt.executeQuery();
 
-			Toilet tTemp = null;
-			Review rTemp = null;
-
-			while (rs.next()) {
+			if (rs.next()) {
 				tTemp = new Toilet(rs.getInt("t_id"));
 				tTemp.setCityName(rs.getString("city"));
 				tTemp.setBoroughName(rs.getString("borough"));
@@ -66,39 +147,16 @@ public class ReviewDao extends BaseDao {
 
 			}
 
-			System.out.println(tTemp.toString());
-
-			reviewPstmt = conn.prepareStatement(
-					"select m.id as m_id, m.nickname as m_nickname, review, score,r.reg_date as r_reg_date from members m, reviews r where r.toilet_id=? and r.writer_id=m.id");
-			reviewPstmt.setInt(1, tTemp.getId());
-			rs = reviewPstmt.executeQuery();
-
-			ArrayList<Review> reviewList = new ArrayList<>();
-			while (rs.next()) {
-				rTemp = new Review(rs.getInt("m_id"));
-				rTemp.setMemberNickname(rs.getString("m_nickname"));
-				rTemp.setReview(rs.getString("review"));
-				rTemp.setScore(rs.getInt("score"));
-				rTemp.setRegDate(rs.getString("r_reg_date"));
-				reviewList.add(rTemp);
-			}
-
-			review.setList(reviewList);
-			review.setToilet(tTemp);
-
 		} catch (SQLException e) {
 			System.out.println("review > dao > getToiletReivews");
 			e.printStackTrace();
-
-			review.clear();
 		} finally {
 
-			close(rs, conn, toiletPstmt, reviewPstmt);
+			close(rs, toiletPstmt, conn);
 
 		}
 
-		return review;
-
+		return tTemp;
 	}
 
 	public int add(int toiletId, int writerId, String review, int score) {
@@ -144,7 +202,7 @@ public class ReviewDao extends BaseDao {
 
 		return result;
 	}
-	
+
 	public int update(int toiletId, int writerId, String review, int score) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -153,7 +211,8 @@ public class ReviewDao extends BaseDao {
 
 		try {
 			conn = getConnection();
-			pstmt = conn.prepareStatement("UPDATE reviews SET review=?,score=score+? WHERE toilet_id=? and writer_id=?");
+			pstmt = conn
+					.prepareStatement("UPDATE reviews SET review=?,score=score+? WHERE toilet_id=? and writer_id=?");
 			pstmt.setString(1, review);
 			pstmt.setInt(2, score);
 			pstmt.setInt(3, toiletId);
@@ -163,8 +222,7 @@ public class ReviewDao extends BaseDao {
 
 			if (result > 0) {
 
-				pstmt = conn.prepareStatement(
-						"UPDATE toilets SET sum_review = sum_review + ? WHERE id = ?");
+				pstmt = conn.prepareStatement("UPDATE toilets SET sum_review = sum_review + ? WHERE id = ?");
 				pstmt.setInt(1, score);
 				pstmt.setInt(2, toiletId);
 

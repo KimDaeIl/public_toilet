@@ -12,7 +12,7 @@
 <title>Insert title here</title>
 
 <script
-	src="//apis.daum.net/maps/maps3.js?apikey=24780e4341802fb5886463b2df20361f&libraries=services"
+	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bf547e4161c817404a7363bfb1567e6a&libraries=services"
 	type="text/javascript"></script>
 
 </head>
@@ -386,6 +386,37 @@ star-input>.input.focus {
 </style>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
+<script type="text/javascript">
+
+	function requestReviewPage(page, num){
+		alert(page);
+		alert(num);
+		$.ajax({
+			type : "post",
+			url : "review",
+			data : {
+				"action" : "getReviewPage",
+				"page": page,
+				"toiletNum":num
+			},
+			timeout : 5000,
+			dataType : "json",
+			success : function(args) {
+				alert(args)
+			},
+			error : function(request, status, error) {
+
+				if (request.status == "200") {
+					alert("no data")
+				} else {
+					alert("code:" + request.status + "\n" + "message:"
+							+ request.responseText + "\n" + "error:" + error);
+				}
+			}
+		});
+
+	}
+</script>
 <body>
 
 	<%
@@ -395,6 +426,8 @@ star-input>.input.focus {
 			response.sendRedirect("index.jsp");
 			return;
 		}
+
+		boolean isLoggedIn = session.getAttribute("member") != null;
 		ArrayList<Review> reviews = reviewList.getList();
 		Toilet toilet = reviewList.getToilet();
 	%>
@@ -410,9 +443,10 @@ star-input>.input.focus {
 		</div>
 		<div id="detail_info"
 			style="margin: 4px 0 48px 0; padding: 4px; border-bottom: 2px dotted gray;">
-			<span><h3>시설명</h3>&nbsp&nbsp&nbsp&nbsp<%=toilet.getName()%></span><br /> <br /> <span><h3>시설정보</h3>&nbsp&nbsp&nbsp&nbsp<%=Util.isEqualsNull(toilet.getOpenTime()) ? "" : toilet.getOpenTime()%>
+			<span><h3>시설명</h3>&nbsp&nbsp&nbsp&nbsp<%=toilet.getName()%></span><br />
+			<br /> <span><h3>시설정보</h3>&nbsp&nbsp&nbsp&nbsp<%=Util.isEqualsNull(toilet.getOpenTime()) ? "" : toilet.getOpenTime()%>
 				&nbsp|&nbsp <%=Util.isEqualsNull(toilet.getPhone()) ? toilet.getPhone2() : toilet.getPhone()%>
-			</span><br/><br/>
+			</span><br /> <br />
 
 			<ul style="overflow: auto; width: 960px; white-space: nowrap;">
 				<h3>시설현황</h3>
@@ -421,7 +455,9 @@ star-input>.input.focus {
 				%>
 				<li class="toilet_info"><img alt="" src="img/is_common.png"
 					style="width: 90px; margin: 0 auto; display: block;" />
-					<div style="text-align: center;">공용</div></li>
+					<div style="text-align: center; margin-top: 4px;">
+						<b>공용</b>
+					</div></li>
 				<%
 					}
 				%>
@@ -431,8 +467,8 @@ star-input>.input.focus {
 				%>
 				<li class="toilet_info"><img alt="" src="img/man_feces.png"
 					style="width: 90px; margin: 0 auto; display: block;" />
-					<div style="text-align: center;">
-						<%=toilet.getCountManFeces()%>
+					<div style="text-align: center; margin-top: 4px;">
+						<b><%=toilet.getCountManFeces()%></b>
 					</div></li>
 				<%
 					}
@@ -443,8 +479,8 @@ star-input>.input.focus {
 				%>
 				<li class="toilet_info"><img alt="" src="img/man_urine.png"
 					style="width: 90px; margin: 0 auto; display: block;" />
-					<div style="text-align: center;">
-						<%=toilet.getCountManUrine()%>
+					<div style="text-align: center; margin-top: 4px;">
+						<b><%=toilet.getCountManUrine()%></b>
 					</div></li>
 				<%
 					}
@@ -456,8 +492,8 @@ star-input>.input.focus {
 				<li class="toilet_info"><img alt=""
 					src="img/man_feces_handicapped.png"
 					style="width: 90px; margin: 0 auto; display: block;" />
-					<div style="text-align: center;">
-						<%=toilet.getCountManFecesForHandicapped()%>
+					<div style="text-align: center; margin-top: 4px;">
+						<b><%=toilet.getCountManFecesForHandicapped()%></b>
 					</div></li>
 				<%
 					}
@@ -469,8 +505,8 @@ star-input>.input.focus {
 				<li class="toilet_info"><img alt=""
 					src="img/man_urine_handipcapped.png"
 					style="width: 90px; margin: 0 auto; display: block;" />
-					<div style="text-align: center;">
-						<%=toilet.getCountManUrineForHandicapped()%>
+					<div style="text-align: center; margin-top: 4px;">
+						<b><%=toilet.getCountManUrineForHandicapped()%></b>
 					</div></li>
 				<%
 					}
@@ -482,8 +518,8 @@ star-input>.input.focus {
 				<li class="toilet_info"><img alt=""
 					src="img/man_child_feces.png"
 					style="width: 90px; margin: 0 auto; display: block;" />
-					<div style="text-align: center;">
-						<%=toilet.getCountManChildFeces()%>
+					<div style="text-align: center; margin-top: 4px;">
+						<b><%=toilet.getCountManChildFeces()%></b>
 					</div></li>
 				<%
 					}
@@ -495,8 +531,8 @@ star-input>.input.focus {
 				<li class="toilet_info"><img alt=""
 					src="img/man_child_urine.png"
 					style="width: 90px; margin: 0 auto; display: block;" />
-					<div style="text-align: center;">
-						<%=toilet.getCountManChildUrine()%>
+					<div style="text-align: center; margin-top: 4px;">
+						<b><%=toilet.getCountManChildUrine()%></b>
 					</div></li>
 				<%
 					}
@@ -507,8 +543,8 @@ star-input>.input.focus {
 				%>
 				<li class="toilet_info"><img alt="" src="img/lady_feces.png"
 					style="width: 90px; margin: 0 auto; display: block;" />
-					<div style="text-align: center;">
-						<%=toilet.getCountLadyFeces()%>
+					<div style="text-align: center; margin-top: 4px;">
+						<b><%=toilet.getCountLadyFeces()%></b>
 					</div></li>
 				<%
 					}
@@ -520,8 +556,8 @@ star-input>.input.focus {
 				<li class="toilet_info"><img alt=""
 					src="img/lady_feces_handicapped.png"
 					style="width: 90px; margin: 0 auto; display: block;" />
-					<div style="text-align: center;">
-						<%=toilet.getCountLadyFecesForHandicapped()%>
+					<div style="text-align: center; margin-top: 4px;">
+						<b><%=toilet.getCountLadyFecesForHandicapped()%></b>
 					</div></li>
 				<%
 					}
@@ -533,8 +569,8 @@ star-input>.input.focus {
 				<li class="toilet_info"><img alt=""
 					src="img/lady_child_feces.png"
 					style="width: 90px; margin: 0 auto; display: block;" />
-					<div style="text-align: center;">
-						<%=toilet.getCountLadyChildFeces()%>
+					<div style="text-align: center; margin-top: 4px;">
+						<b><%=toilet.getCountLadyChildFeces()%></b>
 					</div></li>
 				<%
 					}
@@ -565,8 +601,9 @@ star-input>.input.focus {
 			</div>
 			<textarea rows="" cols=""
 				style="width: 696px; height: 58px; float: left;" minlength="10"
-				maxlength="100"></textarea>
-			<button type="button" style="height: 60px; width: 60px;">버튼</button>
+				maxlength="100" <%if (!isLoggedIn)%> <%="readonly"%>></textarea>
+			<button type="button" style="height: 60px; width: 60px;"
+				<%if (!isLoggedIn)%> <%="disabled"%>>버튼</button>
 
 		</div>
 
@@ -574,13 +611,20 @@ star-input>.input.focus {
 		<hr style="background: black; height: 1px; clear: both;" />
 		<div style="background: white; clear: both;">
 			<ul>
+				<%
+					for (Review r : reviews) {
+				%>
 				<li class="review_item" style="">
-					<%
-						for (Review r : reviews) {
-					%>
 					<div style="width: 20%; float: left; display: inline-block;">
-						<span><div style="float: left; display: inline-block;">별</div>
-							<div style="display: inline-block; clear: right"><%=r.getScore()%></div></span>
+						<span><span
+							style="display: inline-block; clear: right; margin-right: 4xp"><%=r.getScore()%></span>
+							<span style="display: inline-block;"> <%
+ 	int count = (r.getScore() + 1) / 2;
+ 		for (int i = 1; i <= count; i++) {
+ %> <img src="img/star.png" /> <%
+ 	}
+ %>
+						</span> </span>
 					</div>
 					<div style="width: 80%; display: inline-block; clear: right;">
 
@@ -590,17 +634,22 @@ star-input>.input.focus {
 							</span>
 						</div>
 
-					</div> <%
- 	}
- %>
+					</div>
 				</li>
+				<%
+					}
+				%>
 			</ul>
 		</div>
 
 		<div style="text-align: center;">
-			<a class="vertical" href="javascript:void(0);"
-				style="padding: 8px 16px;">&lt</a> <em class="vertical">현재 목록
-				페이지</em> <a class="vertical" href="javascript:void(0);"
+			<a class="vertical" href=<%if (reviewList.getPage() > 1) {%>
+				<%="\"javascript:requestReviewPage(" + (reviewList.getPage() - 1) + "," + toilet.getId() + ")\""%>
+				<%} else {%> <%="\"javascript:void(0)\""%> <%}%>
+				style="padding: 8px 16px;">&lt</a> <em class="vertical"><b><%=reviewList.getPage()%></b></em>
+			<a class="vertical" href=<%if (reviewList.getList().size() == 15) {%>
+				<%="\"javascript:requestReviewPage(" + (reviewList.getPage() + 1) + "," + toilet.getId() + ")\""%>
+				<%} else {%> <%="\"javascript:void(0)\""%> <%}%>
 				style="padding: 8px 16px;">&gt</a>
 		</div>
 	</div>
