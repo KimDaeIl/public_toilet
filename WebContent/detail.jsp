@@ -88,7 +88,7 @@ star-input>.input.focus{outline:1px dotted #ddd;}
 </head>
 
 <body>
-<div id="map" style="width:80%;height:350px;"></div>
+<div id="map" style="width:80%;height:500px;margin:0 auto;"></div>
 <script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey=24780e4341802fb5886463b2df20361f&libraries=services"></script>
 <script>
 var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
@@ -122,11 +122,20 @@ map.setZoomable(false);
 // marker.setMap(null);    
 </script>
 
-<fieldset>
+<fieldset style="width:80%; margin:0 auto;">
 <legend>상세정보</legend>
+<center><img src="img/남자대변기.png" style="margin-left:8px; width: 90px; height: auto;"/>
+<img src="img/남자소변기.png" style="margin-left:8px; width: 90px; height: auto;"/>
+<img src="img/남자어린이대변기.png" style="margin-left:8px; width: 90px; height: auto;"/>
+<img src="img/남자어린이소변기.png" style="margin-left:8px; width: 90px; height: auto;"/>
+<img src="img/남자장애인대변기.png" style="margin-left:8px; width: 90px; height: auto;"/>
+<img src="img/남자장애인소변기.png" style="margin-left:8px; width: 90px; height: auto;"/>
+<img src="img/여자대소변기.png" style="margin-left:8px; width: 90px; height: auto;"/>
+<img src="img/여자어린이대변기.png" style="margin-left:8px; width: 90px; height: auto;"/>
+<img src="img/여자장애인대변기.png" style="margin-left:8px; width: 90px; height: auto;"/></center>
 </fieldset>
 
-<fieldset>
+<fieldset style="width:80%; margin:0 auto;">
 <legend> 화장실 평가 </legend>
 		<div id="StarRating">
 			<span class="star-input">
