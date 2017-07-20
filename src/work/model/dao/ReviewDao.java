@@ -79,7 +79,7 @@ public class ReviewDao extends BaseDao {
 				rTemp.setMemberNickname(rs.getString("m_nickname"));
 				rTemp.setReview(rs.getString("review"));
 				rTemp.setScore(rs.getInt("score"));
-				rTemp.setRegDate(rs.getString("_reg_date"));
+				rTemp.setRegDate(rs.getString("r_reg_date"));
 				reviewList.add(rTemp);
 			}
 

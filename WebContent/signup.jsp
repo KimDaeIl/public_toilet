@@ -7,6 +7,11 @@
 <title>Insert title here</title>
 
 <style>
+
+
+body,html{
+width:100%;
+height:100%;}
 input {
 	box-shadow: none;
 	border: none;
@@ -29,9 +34,10 @@ input {
 
 </script>
 </head>
+
 <body>
 
-	<div style="width: 960px; margin-top:20%;">
+	<div style="width: 960px; margin: 0 auto; padding-top:10%;">
 		<div style="width: 30%; margin: 0 auto;">
 			<form action="member?action=signUp" method="post">
 				<div>

@@ -368,8 +368,8 @@ a.no-uline {
 		<%
 			} else {
 		%>
-		<a href=member?action=logout style="text-decoration: none">로그아웃</a>
-		<a href="bye.jsp" style="text-decoration: none">탈퇴</a>
+		<a href=member?action=logout style="text-decoration: none">로그아웃</a> <a
+			href="bye.jsp" style="text-decoration: none">탈퇴</a>
 		<%
 			}
 		%>
@@ -499,15 +499,20 @@ a.no-uline {
 					// 해당 장소에 인포윈도우에 장소명을 표시합니다
 					// mouseout 했을 때는 인포윈도우를 닫습니다
 
-					(function(marker, title) {
+					(function(marker, place) {
 						daum.maps.event.addListener(marker, 'mouseover',
 								function() {
-									displayInfowindow(marker, title);
+									displayInfowindow(marker, place);
 								});
 
 						daum.maps.event.addListener(marker, 'mouseout',
 								function() {
 									infowindow.close();
+								});
+
+						daum.maps.event.addListener(marker, 'click',
+								function() {
+							window.location.href="review?action=getReviews&toiletNum="+place.id;
 								});
 
 						itemEl.onmouseover = function() {
@@ -622,15 +627,15 @@ a.no-uline {
 			function displayInfowindow(marker, place) {
 				var content = '<div style="padding:5px;z-index:1;"><h3>'
 						+ place.name;
-				
-				if (place.openTime != 'null'){
+
+				if (place.openTime != 'null') {
 					content += '</h3>' + place.openTime + '<br/></div>';
-					
-				}else{
+
+				} else {
 					content += '</h3><br/></div>';
-					
+
 				}
-				
+
 				infowindow.setContent(content);
 				infowindow.open(map, marker);
 			}

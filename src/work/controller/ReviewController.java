@@ -83,9 +83,9 @@ public class ReviewController extends HttpServlet implements IController {
 		case "updateReview":
 			updateReview(req, res);
 			break;
-
-		default:
-			res.sendRedirect("error.jsp");
+			
+			default:
+				res.sendRedirect("error.jsp");
 		}
 
 	}
@@ -93,10 +93,10 @@ public class ReviewController extends HttpServlet implements IController {
 	private void getReviews(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
 		ReviewList review = service.getReviews(req.getParameter("toiletNum"));
-
+		
 		if (Util.isValidId(review.getToilet().getId())) {
 			req.setAttribute("review", review);
-			req.getRequestDispatcher("result.jsp").forward(req, res);
+			req.getRequestDispatcher("detail.jsp").forward(req, res);
 
 		} else {
 			res.sendRedirect(req.getRequestURI());
@@ -169,4 +169,6 @@ public class ReviewController extends HttpServlet implements IController {
 		res.sendRedirect("error.jsp");
 
 	}
+
+	
 }

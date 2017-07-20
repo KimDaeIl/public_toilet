@@ -73,7 +73,9 @@ public class ToiletController extends HttpServlet implements IController {
 			getBoroughs(req, res);
 			break;
 
+
 		default:
+			res.sendRedirect("error.jsp");
 		}
 
 	}
@@ -116,6 +118,8 @@ public class ToiletController extends HttpServlet implements IController {
 			res.sendRedirect("error.jsp");
 		}
 	}
+
+	
 
 	private String makeJson(ArrayList list) {
 		StringBuilder builder = new StringBuilder();

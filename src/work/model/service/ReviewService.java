@@ -17,6 +17,7 @@ public class ReviewService {
 
 	public ReviewList getReviews(String toiletNum) {
 		ReviewList reviewList = new ReviewList();
+		System.out.println(toiletNum);
 
 		if (!Util.isEqualsNull(toiletNum)) {
 			toiletNum = toiletNum.trim();
