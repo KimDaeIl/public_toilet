@@ -55,22 +55,18 @@ public class Review {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("{\"memberId\":");
-		builder.append(memberId);
-		builder.append(",\" memberNickname\":\"");
-		builder.append(memberNickname);
-		builder.append("\",\" review\":\"");
-		builder.append(review);
-		builder.append("\", \"score\":");
-		builder.append(score);
-		builder.append(", \"regDate\":\"");
-		builder.append(regDate);
-		builder.append("\"}");
+		builder.append("{\"memberId\":")
+		.append(memberId)
+		.append(",\"memberNickname\":\"")
+		.append(memberNickname)
+		.append("\",\"review\":\"")
+		.append(review)
+		.append("\", \"score\":")
+		.append(score)
+		.append(", \"regDate\":\"")
+		.append(regDate)
+		.append("\"}");
 		return builder.toString();
 	}
 
-	
-	
-	
-	
 }

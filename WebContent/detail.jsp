@@ -1,3 +1,4 @@
+<%@page import="work.model.dto.Member"%>
 <%@page import="work.Util.Util"%>
 <%@page import="work.model.dto.Toilet"%>
 <%@page import="java.util.ArrayList"%>
@@ -387,33 +388,83 @@ star-input>.input.focus {
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
 <script type="text/javascript">
-
-	function requestReviewPage(page, num){
-		alert(page);
-		alert(num);
+	function requestReviewPage(page, num) {
 		$.ajax({
 			type : "post",
 			url : "review",
 			data : {
 				"action" : "getReviewPage",
-				"page": page,
-				"toiletNum":num
+				"page" : page,
+				"toiletNum" : num
 			},
 			timeout : 5000,
 			dataType : "json",
 			success : function(args) {
-				alert(args)
+				updateReplyContainer(args);
 			},
 			error : function(request, status, error) {
 
 				if (request.status == "200") {
-					alert("no data")
+					alert("no data");
 				} else {
 					alert("code:" + request.status + "\n" + "message:"
 							+ request.responseText + "\n" + "error:" + error);
 				}
 			}
 		});
+
+	}
+
+	function updateReplyContainer(data) {
+		var pageNum = data.page;
+		var toiletId = data.toilet.id;
+		data = data.list;
+
+		console.log(data);
+
+		var rContainer = $("#reply_container");
+		if (data.length > 0) {
+			rContainer.html('');
+
+			var replyContainer = '';
+			var temp = '';
+			for (var i = 0; i < data.length; i++) {
+				temp = data[i];
+				replyContainer += "<li class='review_item' style=''><div style='width: 20%; float: left; display: inline-block;'><span><span style='display: inline-block; clear: right; margin-right: 4xp'>";
+				replyContainer += temp.score;
+				replyContainer += "</span><span style='display: inline-block;'>";
+
+				var starCount = (temp.score + 1) / 2;
+				for (var j = 1; j <= starCount; j++) {
+					replyContainer += "<img src='img/star.png' />";
+				}
+				replyContainer += "</span> </span></div><div style='width: 80%; display: inline-block; clear: right;'><h3>";
+				replyContainer += temp.review;
+				replyContainer += "</h3><div style='margin-top: 8px;'></div><span>";
+				replyContainer += temp.memberNickname;
+				replyContainer += "&nbsp;|&nbsp;";
+				replyContainer += temp.regDate;
+				replyContainer += "</span></div></li>";
+			}
+			rContainer.html(replyContainer);
+
+			updateControllerContainer(pageNum, toiletId, data.length == 15);
+		} else {
+			alert('마지막 페이지입니다.');
+		}
+
+	}
+
+	function updateControllerContainer(page, toiletId, hasMore) {
+		var previou = $("#previous");
+		var next = $("#next");
+		var pageNum = $("#page_num");
+
+		pageNum.text(page);
+		previou.attr("href", page > 1 ? "javascript:requestReviewPage("
+				+ (page - 1) + "," + toiletId + ")" : "javascript:void(0)");
+		next.attr("href", hasMore ? "javascript:requestReviewPage("
+				+ (page + 1) + "," + toiletId + ")" : "javascript:void(0)");
 
 	}
 </script>
@@ -427,7 +478,15 @@ star-input>.input.focus {
 			return;
 		}
 
+		System.out.println(session.getAttribute("member"));
 		boolean isLoggedIn = session.getAttribute("member") != null;
+		Member member = null;
+
+		if (isLoggedIn) {
+			member = (Member) session.getAttribute("member");
+		}
+
+		System.out.println(isLoggedIn);
 		ArrayList<Review> reviews = reviewList.getList();
 		Toilet toilet = reviewList.getToilet();
 	%>
@@ -599,18 +658,18 @@ star-input>.input.focus {
 				</span> <output for="star-input"> <b>0</b></output>
 				</span>
 			</div>
-			<textarea rows="" cols=""
+			<textarea id="input_review" rows="" cols=""
 				style="width: 696px; height: 58px; float: left;" minlength="10"
-				maxlength="100" <%if (!isLoggedIn)%> <%="readonly"%>></textarea>
+				maxlength="100" <%if (!isLoggedIn) {%> <%="readonly"%> <%}%>></textarea>
 			<button type="button" style="height: 60px; width: 60px;"
-				<%if (!isLoggedIn)%> <%="disabled"%>>버튼</button>
+				<%if (!isLoggedIn) {%> <%="disabled"%> <%}%>>버튼</button>
 
 		</div>
 
 
 		<hr style="background: black; height: 1px; clear: both;" />
 		<div style="background: white; clear: both;">
-			<ul>
+			<ul id="reply_container">
 				<%
 					for (Review r : reviews) {
 				%>
@@ -620,6 +679,7 @@ star-input>.input.focus {
 							style="display: inline-block; clear: right; margin-right: 4xp"><%=r.getScore()%></span>
 							<span style="display: inline-block;"> <%
  	int count = (r.getScore() + 1) / 2;
+
  		for (int i = 1; i <= count; i++) {
  %> <img src="img/star.png" /> <%
  	}
@@ -643,11 +703,13 @@ star-input>.input.focus {
 		</div>
 
 		<div style="text-align: center;">
-			<a class="vertical" href=<%if (reviewList.getPage() > 1) {%>
+			<a id="previous" class="vertical"
+				href=<%if (reviewList.getPage() > 1) {%>
 				<%="\"javascript:requestReviewPage(" + (reviewList.getPage() - 1) + "," + toilet.getId() + ")\""%>
 				<%} else {%> <%="\"javascript:void(0)\""%> <%}%>
-				style="padding: 8px 16px;">&lt</a> <em class="vertical"><b><%=reviewList.getPage()%></b></em>
-			<a class="vertical" href=<%if (reviewList.getList().size() == 15) {%>
+				style="padding: 8px 16px;">&lt</a> <em class="vertical"><b
+				id="page_num"><%=reviewList.getPage()%></b></em> <a id="next"
+				class="vertical" href=<%if (reviewList.getList().size() == 15) {%>
 				<%="\"javascript:requestReviewPage(" + (reviewList.getPage() + 1) + "," + toilet.getId() + ")\""%>
 				<%} else {%> <%="\"javascript:void(0)\""%> <%}%>
 				style="padding: 8px 16px;">&gt</a>

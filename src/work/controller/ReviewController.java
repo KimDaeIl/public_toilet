@@ -96,7 +96,9 @@ public class ReviewController extends HttpServlet implements IController {
 
 	private void getReviews(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
-		ReviewList review = service.getReviews(req.getParameter("toiletNum"));
+		ReviewList review = Util.isNull(req.getParameter("memberId"))
+				? service.getReviews(req.getParameter("toiletNum"))
+				: service.getReviewsWithMembers(req.getParameter("toiletNum"), req.getParameter("memberId"));
 
 		if (Util.isValidId(review.getToilet().getId())) {
 			req.setAttribute("review", review);
@@ -112,8 +114,8 @@ public class ReviewController extends HttpServlet implements IController {
 
 		System.out.println(req.getParameter("page"));
 		System.out.println(req.getParameter("toiletNum"));
-		
-		ReviewList list=service.getReviewPage(req.getParameter("page"), req.getParameter("toiletNum"));
+
+		ReviewList list = service.getReviewPage(req.getParameter("page"), req.getParameter("toiletNum"));
 		System.out.println(list.toString());
 		res.setContentType("application/json");
 		res.getWriter().println(list.toString());

@@ -1,6 +1,6 @@
-p
 <!-- 다음 데이터셋 이용한 키워드 검색 < 부산의 화장실 > -->
 
+<%@page import="work.model.dto.Member"%>
 <%@page import="work.Util.Util"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
 	pageEncoding="EUC-KR"%>
@@ -361,7 +361,8 @@ a.no-uline {
 <body>
 	<p align="right">
 		<%
-			if (Util.isNull(session.getAttribute("member"))) {
+			Member member = (Member) session.getAttribute("member");
+			if (Util.isNull(member)) {
 		%><a href="login.jsp" style="text-decoration: none">로그인</a>
 		&nbsp;&nbsp;<a href="signup.jsp" style="text-decoration: none">회원
 			등록</a>&nbsp;
@@ -510,10 +511,23 @@ a.no-uline {
 									infowindow.close();
 								});
 
-						daum.maps.event.addListener(marker, 'click',
-								function() {
-							window.location.href="review?action=getReviews&toiletNum="+place.id;
-								});
+						daum.maps.event
+								.addListener(
+										marker,
+										'click',
+										function() {
+		<%if (Util.isNull(member)) {%>
+			window.location.href = "review?action=getReviews&toiletNum="
+													+ place.id;
+		<%} else {%>
+			window.location.href = "review?action=getReviews&toiletNum="
+													+ place.id
+													+ "&memberId="
+													+
+		<%=member.getId()%>
+			;
+		<%}%>
+			});
 
 						itemEl.onmouseover = function() {
 							displayInfowindow(marker, title);

@@ -15,6 +15,30 @@ public class ReviewService {
 		dao = new ReviewDao();
 	}
 
+	public ReviewList getReviewsWithMembers(String toiletNum, String memberStr){
+		ReviewList reviewList = new ReviewList();
+
+		if (!Util.isEqualsNull(toiletNum)) {
+			toiletNum = toiletNum.trim();
+
+			try {
+
+				int toiletId = Integer.parseInt(toiletNum);
+				int memberId = Integer.parseInt(memberStr); 
+
+				if (toiletId > 0) {
+					reviewList = dao.getToiletReivewsWithMembers(toiletId,memberId);
+				}
+			}catch (NumberFormatException e) {
+				System.out.println("review > service > getReviewsWithMembers");
+				e.printStackTrace();
+				reviewList.clear();
+			}
+		}
+		
+		
+		return reviewList;
+	}
 	public ReviewList getReviews(String toiletNum) {
 		ReviewList reviewList = new ReviewList();
 
@@ -29,6 +53,7 @@ public class ReviewService {
 					reviewList = dao.getToiletReivews(toiletId);
 				}
 			} catch (NumberFormatException e) {
+				System.out.println("review > service > getReviews");
 				e.printStackTrace();
 				reviewList.clear();
 			}

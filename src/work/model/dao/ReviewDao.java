@@ -30,6 +30,65 @@ public class ReviewDao extends BaseDao {
 		return reviewList;
 	}
 
+	public ReviewList getToiletReivewsWithMembers(int toiletId, int memberId) {
+
+		ReviewList list = new ReviewList();
+
+		Toilet toilet = getToilet(toiletId);
+
+		if (!Util.isNull(toilet) && Util.isValidId(toilet.getId())) {
+
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try {
+				StringBuilder sql = new StringBuilder();
+
+				sql.append("(select  m.id as m_id, m.nickname as m_nickname, review, score,r.reg_date as r_reg_date ")
+						.append("from (select * ")
+						.append(" from(select ROWNUM as num, toilet_id,writer_id, review, score,reg_date ")
+						.append(" from (select * from reviews where toilet_id=? order by reg_date) WHERE ROWNUM<=?)   where num>?) r, members m ")
+						.append(" where r.writer_id=m.id)").append("union")
+						.append("(select m.id as m_id, m.nickname as m_nickname, review, score,r.reg_date as r_reg_date ")
+						.append("from members m, reviews r where r.toilet_id=? and r.writer_id=? and m.id = r.writer_id)");
+
+				conn = getConnection();
+
+				pstmt = conn.prepareStatement(sql.toString());
+				pstmt.setInt(1, toilet.getId());
+				pstmt.setInt(2, 15);
+				pstmt.setInt(3, 0);
+				pstmt.setInt(4, toilet.getId());
+				pstmt.setInt(5, memberId);
+
+				rs = pstmt.executeQuery();
+
+				ArrayList<Review> reviewList = new ArrayList<>();
+				Review rTemp = null;
+				while (rs.next()) {
+					rTemp = new Review(rs.getInt("m_id"));
+					rTemp.setMemberNickname(rs.getString("m_nickname"));
+					rTemp.setReview(rs.getString("review"));
+					rTemp.setScore(rs.getInt("score"));
+					rTemp.setRegDate(rs.getString("r_reg_date"));
+					reviewList.add(rTemp);
+				}
+
+				list.setToilet(toilet);
+				list.setList(reviewList);
+				
+			} catch (SQLException e) {
+				System.out.println("review > dao > getToiletReivewsWithMembers");
+				e.printStackTrace();
+
+			} finally {
+				close(rs, pstmt, conn);
+			}
+		}
+		return list;
+
+	}
+
 	public ReviewList getReviewPage(int toiletId, int pageNum) {
 
 		return getReviewPage(toiletId, pageNum, 15);
@@ -61,16 +120,18 @@ public class ReviewDao extends BaseDao {
 
 		ReviewList list = new ReviewList(pageNum);
 		try {
+			StringBuilder sql = new StringBuilder();
+			sql.append("select  m.id as m_id, m.nickname as m_nickname, review, score,r.reg_date as r_reg_date ")
+					.append("from (select * ")
+					.append("from(select ROWNUM as num, toilet_id,writer_id, review, score,reg_date ")
+					.append("from (select * from reviews where toilet_id = ? order by reg_date) WHERE ROWNUM <= ?)   where num > ?) r, members m ")
+					.append("where r.writer_id = m.id");
 			conn = getConnection();
-			pstmt = conn.prepareStatement(
-					"select  m.id as m_id, m.nickname as m_nickname, review, score,r.reg_date as r_reg_date "
-							+ "from (select * "
-							+ "from(select ROWNUM as num, toilet_id,writer_id, review, score,reg_date "
-							+ "from reviews WHERE ROWNUM<=?)" + " where num>?) r, members m "
-							+ "where r.writer_id=m.id");
+			pstmt = conn.prepareStatement(sql.toString());
 
-			pstmt.setInt(1, pageNum * dataCount);
-			pstmt.setInt(2, (pageNum - 1) * dataCount);
+			pstmt.setInt(1, toiletId);
+			pstmt.setInt(2, pageNum * dataCount);
+			pstmt.setInt(3, (pageNum - 1) * dataCount);
 
 			rs = pstmt.executeQuery();
 
