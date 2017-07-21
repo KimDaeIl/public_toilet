@@ -12,6 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
 <title>Insert title here</title>
 
+
 <script
 	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bf547e4161c817404a7363bfb1567e6a&libraries=services"
 	type="text/javascript"></script>
@@ -58,6 +59,11 @@ a {
 	vertical-align: middle;
 }
 -->
+
+
+body {
+	background-image: url('img/header.jpg');
+}
 </style>
 
 
