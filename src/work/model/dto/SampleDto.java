@@ -1,0 +1,1 @@
+package work.model.dto;public class SampleDto {}
