@@ -35,7 +35,7 @@ input {
 </head>
 <body>
 
-	<div style="width: 960px; margin-top: 40%;">
+	<div style="width: 960px;  margin:0 auto;margin-top: 288px;">
 		<div style="width: 30%; margin: 0 auto;">
 			<form action=member?action=delete method="post">
 				<div>

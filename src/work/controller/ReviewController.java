@@ -129,27 +129,14 @@ public class ReviewController extends HttpServlet implements IController {
 
 		if (!Util.isNull(session) && !Util.isNull(session.getAttribute("member"))) {
 
-			// try {
-
-			// if (((Member) session.getAttribute("member")).getId() == Integer
-			// .parseInt(req.getParameter("writer_id"))) {
-
 			int result = service.addReview(req.getParameter("toilet_id"), req.getParameter("writer_id"),
 					req.getParameter("review"), req.getParameter("score"));
 
 			if (result > 0) {
-				// 화장실 상세 페이지 재호출해서 업데이트
+
+				req.getRequestDispatcher(getUriForRedirectToDetail(req.getParameter("toilet_id"), req.getParameter("writer_id"))).forward(req,res);
 				return;
 			}
-			//
-			// }
-			//
-			// } catch (NumberFormatException e) {
-			// System.out.println("review > service > addreview >
-			// parseInt(writer_id)");
-			// e.printStackTrace();
-			//
-			// }
 		}
 
 		res.sendRedirect("error.jsp");
@@ -169,8 +156,7 @@ public class ReviewController extends HttpServlet implements IController {
 					req.getParameter("review"), req.getParameter("score"));
 
 			if (result > 0) {
-				// 화장실 상세 페이지 재호출해서 업데이트
-
+				req.getRequestDispatcher(getUriForRedirectToDetail(req.getParameter("toilet_id"), req.getParameter("writer_id"))).forward(req,res);
 				return;
 
 			}
@@ -185,6 +171,15 @@ public class ReviewController extends HttpServlet implements IController {
 
 		res.sendRedirect("error.jsp");
 
+	}
+
+	private String getUriForRedirectToDetail(String toiletId, String memberId) {
+		StringBuilder builder = new StringBuilder();
+
+		builder.append("review?action=getReviews&toiletNum=").append(toiletId).append("&memberId=").append(memberId);
+		System.out.println("---- add or update: redirect ---");
+		System.out.println(builder.toString());
+		return builder.toString();
 	}
 
 }

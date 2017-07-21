@@ -74,6 +74,7 @@ public class ReviewDao extends BaseDao {
 					reviewList.add(rTemp);
 				}
 
+				list.setPage(1);
 				list.setToilet(toilet);
 				list.setList(reviewList);
 				

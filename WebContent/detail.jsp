@@ -388,6 +388,7 @@ star-input>.input.focus {
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
 <script type="text/javascript">
+	var myReview;
 	function requestReviewPage(page, num) {
 		$.ajax({
 			type : "post",
@@ -440,15 +441,17 @@ star-input>.input.focus {
 				}
 				replyContainer += "</span> </span></div><div style='width: 80%; display: inline-block; clear: right;'><h3>";
 				replyContainer += temp.review;
+				console.log(temp.review);
 				replyContainer += "</h3><div style='margin-top: 8px;'></div><span>";
 				replyContainer += temp.memberNickname;
 				replyContainer += "&nbsp;|&nbsp;";
 				replyContainer += temp.regDate;
 				replyContainer += "</span></div></li>";
 			}
+			console.log(replyContainer);
 			rContainer.html(replyContainer);
 
-			updateControllerContainer(pageNum, toiletId, data.length == 15);
+			updateControllerContainer(pageNum, toiletId, data.length >= 15);
 		} else {
 			alert('마지막 페이지입니다.');
 		}
@@ -466,6 +469,28 @@ star-input>.input.focus {
 		next.attr("href", hasMore ? "javascript:requestReviewPage("
 				+ (page + 1) + "," + toiletId + ")" : "javascript:void(0)");
 
+	}
+
+	function writeMembersReview(toilet,memberId) {
+		var score=$(".star-input>output>b").text();
+		var review=$("#input_review").val();
+		
+		if(review.length>=10){
+			window.location.href='review?action=addReview&toilet_id='+toilet+'&writer_id='+memberId+'&review='+review+'&score='+score;
+		}else{
+			alert('리뷰는 10~100자입니다.<br/>현재 리뷰 글자 수 >>'+review.length);
+		}
+		
+	}
+	
+	function updateReview(toilet,memberId, score){
+		var newScore=$(".star-input>output>b").text();
+		var review=$("#input_review").val();
+
+		alert("<"+score+">점에서 <"+newScore+">점으로 수정합니다.");
+		newScore=newScore-score;
+		window.location.href='review?action=updateReview&toilet_id='+toilet+'&writer_id='+memberId+'&review='+review+'&score='+newScore;
+	
 	}
 </script>
 <body>
@@ -661,8 +686,10 @@ star-input>.input.focus {
 			<textarea id="input_review" rows="" cols=""
 				style="width: 696px; height: 58px; float: left;" minlength="10"
 				maxlength="100" <%if (!isLoggedIn) {%> <%="readonly"%> <%}%>></textarea>
-			<button type="button" style="height: 60px; width: 60px;"
-				<%if (!isLoggedIn) {%> <%="disabled"%> <%}%>>버튼</button>
+			<button type="button" style="height: 60px; width: 60px;" id="submit"
+				<%if (!isLoggedIn) {%> <%="disabled"%> <%} else {%>
+				onclick="writeMembersReview(<%=toilet.getId()%>,<%=member.getId()%>)"
+				<%}%>>등록</button>
 
 		</div>
 
@@ -672,6 +699,21 @@ star-input>.input.focus {
 			<ul id="reply_container">
 				<%
 					for (Review r : reviews) {
+
+						if (isLoggedIn) {
+							if (r.getMemberId() == member.getId()) {
+				%>
+				<script type="text/javascript">
+					$("#input_review").text("<%=r.getReview()%>");
+					$("#submit").text("업데이트");
+					//toilet,memberId, score
+					$("#submit").attr("onclick","updateReview(<%=toilet.getId()%>,<%=member.getId()%>,<%=r.getScore()%>)");
+					
+				</script>
+
+				<%
+					}
+						}
 				%>
 				<li class="review_item" style="">
 					<div style="width: 20%; float: left; display: inline-block;">
