@@ -57,23 +57,7 @@
                 <a class="navbar-brand page-scroll" href="index.jsp">화장실 검색 서비스 또이레!</a>
             </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a class="page-scroll" href="login.jsp">로그인</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#page-top">회원가입</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#services">기능소개</a>
-                    </li>                  
-                    <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
+           
             <!-- /.navbar-collapse -->
         </div>
         <!-- /.container-fluid -->
