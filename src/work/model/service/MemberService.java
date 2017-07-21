@@ -16,7 +16,10 @@ public class MemberService {
 		if (isValidMemberId(id) && isValidPw(pw) && isValidNickname(nickname)) {
 
 			Member member = new Member(id.toUpperCase(), pw.toUpperCase(), nickname.toUpperCase());
-			if (dao.insert(member) > 0) {
+
+			int result = dao.insert(member);
+			if (result > 0) {
+				member.setId(result);
 				return member;
 			}
 

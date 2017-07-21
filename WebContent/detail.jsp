@@ -525,6 +525,8 @@ star-input>.input.focus {
 	<%
 		System.out.println(reviewList.toString());
 	%>
+	
+	<a href="index.jsp" style="color:white; padding: 8px 16px; font-size:1em;">메인으로 이동</a>
 
 	<div id="container" style="width: 960px; margin: 0 auto;">
 		<div id="map"

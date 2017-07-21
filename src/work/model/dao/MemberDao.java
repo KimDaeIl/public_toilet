@@ -35,6 +35,7 @@ public class MemberDao extends BaseDao {
 				
 				conn.commit();
 				member= selectOne(member.getMemberId(),member.getMemberPw());
+				result=member.getId();
 			}
 
 		} catch (SQLException e) {
