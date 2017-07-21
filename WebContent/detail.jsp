@@ -757,7 +757,7 @@ star-input>.input.focus {
 				<%} else {%> <%="\"javascript:void(0)\""%> <%}%>
 				style="padding: 8px 16px;">&lt</a> <em class="vertical"><b
 				id="page_num"><%=reviewList.getPage()%></b></em> <a id="next"
-				class="vertical" href=<%if (reviewList.getList().size() == 15) {%>
+				class="vertical" href=<%if (reviewList.getList().size() >= 15) {%>
 				<%="\"javascript:requestReviewPage(" + (reviewList.getPage() + 1) + "," + toilet.getId() + ")\""%>
 				<%} else {%> <%="\"javascript:void(0)\""%> <%}%>
 				style="padding: 8px 16px;">&gt</a>

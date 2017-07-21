@@ -94,6 +94,8 @@ public class MemberController extends HttpServlet implements IController {
 				req.getParameter("nickname"));
 
 		if (!Util.isNull(member) && member.getId() > 0) {
+			
+			System.out.println(member);
 			HttpSession session = req.getSession();
 			session.setAttribute("member", member);
 

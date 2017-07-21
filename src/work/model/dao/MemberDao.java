@@ -22,7 +22,7 @@ public class MemberDao extends BaseDao {
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(
-					"INSERT INTO members(id, member_id, member_pw, nickname) values(seq_user_id.NEXTVAL, ?, ?, ?) RETURNING id into val;");
+					"INSERT INTO members(id, member_id, member_pw, nickname) values(seq_user_id.NEXTVAL, ?, ?, ?)");
 			// "INSERT INTO members(id, member_id, member_pw, nickname)
 			// values(seq_user_id.NEXTVAL, ?, ?, ?)");
 			pstmt.setString(1, member.getMemberId());
@@ -32,7 +32,9 @@ public class MemberDao extends BaseDao {
 			result = pstmt.executeUpdate();
 
 			if (result > 0) {
+				
 				conn.commit();
+				member= selectOne(member.getMemberId(),member.getMemberPw());
 			}
 
 		} catch (SQLException e) {
