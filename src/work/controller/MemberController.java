@@ -28,6 +28,12 @@ public class MemberController extends HttpServlet implements IController {
 		service = new MemberService();
 	}
 
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+		process(req, resp);
+	}
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		process(request, response);
@@ -42,12 +48,18 @@ public class MemberController extends HttpServlet implements IController {
 
 	@Override
 	public void process(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		String action = req.getParameter("action");
+		if (Util.isEqualsNull(action)) {
+			res.sendRedirect("error.jsp");
+			return;
+		}
 
-		switch (req.getParameter("action")) {
+		switch (action) {
 		case "signUp":
 			signUp(req, res);
 			break;
 
+		// oo
 		case "login":
 			login(req, res);
 			break;
@@ -56,29 +68,42 @@ public class MemberController extends HttpServlet implements IController {
 			isDuplicatedId(req, res);
 			break;
 
+		// oo
 		case "logout":
 			logout(req, res);
 			break;
+
 		case "delete":
+			delete(req, res);
 			break;
 
 		default:
+			res.sendRedirect("error.jsp");
 			// redirect error page
 		}
 	}
 
 	private void signUp(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+
+		if (!Util.isNull(req.getSession(false)) && !Util.isNull(req.getSession(false).getAttribute("member"))) {
+			res.sendRedirect("error.jsp");
+			return;
+		}
+
 		Member member = service.signUp(req.getParameter("member_id"), req.getParameter("member_pw"),
 				req.getParameter("nickname"));
 
-		if (!Util.isNull(member)) {
+		if (!Util.isNull(member) && member.getId() > 0) {
+			
+			System.out.println(member);
 			HttpSession session = req.getSession();
 			session.setAttribute("member", member);
 
-			RequestDispatcher dispatcher = req.getRequestDispatcher(req.getRequestURL().toString());
+			RequestDispatcher dispatcher = req.getRequestDispatcher("index.jsp");
 			dispatcher.forward(req, res);
+
 		} else {
-			res.sendRedirect("index.jsp");
+			res.sendRedirect("error.jsp");
 
 		}
 
@@ -87,18 +112,18 @@ public class MemberController extends HttpServlet implements IController {
 	private void login(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		Member member = service.login(req.getParameter("member_id"), req.getParameter("member_pw"));
 
-		if (member != null) {
+		if (!Util.isNull(member) && member.getId() > 0) {
 
 			HttpSession session = req.getSession();
 			session.setAttribute("member", member);
 
-			RequestDispatcher dispatcher = req.getRequestDispatcher(req.getRequestURL().toString());
+			RequestDispatcher dispatcher = req.getRequestDispatcher("index.jsp");
 			dispatcher.forward(req, res);
 
-		} else {
-			res.sendRedirect("login.jsp");
-
+			return;
 		}
+
+		res.sendRedirect("error.jsp");
 
 	}
 
@@ -113,27 +138,39 @@ public class MemberController extends HttpServlet implements IController {
 	private void logout(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		HttpSession session = req.getSession(false);
 
-		if (session != null) {
-			if (Util.isNull(session.getAttribute("member"))) {
+		if (!Util.isNull(session)) {
+			if (!Util.isNull(session.getAttribute("member"))) {
 				session.removeAttribute("member");
 				session.invalidate();
+
 			}
+			req.getRequestDispatcher("index.jsp").forward(req, res);
+
+		} else {
+			res.sendRedirect("error.jsp");
 		}
 
-		res.sendRedirect("index.jsp");
 	}
 
 	// TODO: ㅇㅇ
 	private void delete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		HttpSession session = req.getSession(false);
 
-		if (session != null) {
-			RequestDispatcher dispatcher = req.getRequestDispatcher("result.jsp");
-			dispatcher.forward(req, res);
+		if (!Util.isNull(session) && !Util.isNull(session.getAttribute("member"))) {
 
-		} else {
-			res.sendRedirect(req.getRequestURL().toString());
+			int result = service.delete(((Member) session.getAttribute("member")).getMemberId(),
+					req.getParameter("member_pw"));
+
+			if (result > 0) {
+				session.removeAttribute("member");
+				session.invalidate();
+				res.sendRedirect("index.jsp");
+
+				return;
+			}
+
 		}
+		res.sendRedirect("error.jsp");
 
 	}
 

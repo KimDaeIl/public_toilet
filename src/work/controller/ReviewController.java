@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import work.Util.Util;
+import work.model.dto.Member;
 import work.model.dto.ReviewList;
 import work.model.service.ReviewService;
 
@@ -80,7 +81,11 @@ public class ReviewController extends HttpServlet implements IController {
 
 			break;
 		case "updateReview":
-//			updateReview(req, res);
+			updateReview(req, res);
+			break;
+
+		case "getReviewPage":
+			getReviewPage(req, res);
 			break;
 
 		default:
@@ -91,16 +96,29 @@ public class ReviewController extends HttpServlet implements IController {
 
 	private void getReviews(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
-		ReviewList review = service.getReviews(req.getParameter("toiletNum"));
+		ReviewList review = Util.isNull(req.getParameter("memberId"))
+				? service.getReviews(req.getParameter("toiletNum"))
+				: service.getReviewsWithMembers(req.getParameter("toiletNum"), req.getParameter("memberId"));
 
 		if (Util.isValidId(review.getToilet().getId())) {
 			req.setAttribute("review", review);
-			req.getRequestDispatcher("result.jsp").forward(req, res);
+			req.getRequestDispatcher("detail.jsp").forward(req, res);
 
 		} else {
 			res.sendRedirect(req.getRequestURI());
 		}
 
+	}
+
+	private void getReviewPage(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+
+		System.out.println(req.getParameter("page"));
+		System.out.println(req.getParameter("toiletNum"));
+
+		ReviewList list = service.getReviewPage(req.getParameter("page"), req.getParameter("toiletNum"));
+		System.out.println(list.toString());
+		res.setContentType("application/json");
+		res.getWriter().println(list.toString());
 	}
 
 	private void addReview(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -109,23 +127,59 @@ public class ReviewController extends HttpServlet implements IController {
 		 */
 		HttpSession session = req.getSession(false);
 
-		if (!Util.isNull(session) && !Util.isNull(session.getAttribute("memberId"))) {
+		if (!Util.isNull(session) && !Util.isNull(session.getAttribute("member"))) {
 
 			int result = service.addReview(req.getParameter("toilet_id"), req.getParameter("writer_id"),
 					req.getParameter("review"), req.getParameter("score"));
 
 			if (result > 0) {
 
+				req.getRequestDispatcher(getUriForRedirectToDetail(req.getParameter("toilet_id"), req.getParameter("writer_id"))).forward(req,res);
 				return;
 			}
-
-		} else {
-			res.sendRedirect("error.jsp");
-
 		}
+
+		res.sendRedirect("error.jsp");
+
 	}
 
 	private void updateReview(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		HttpSession session = req.getSession(false);
+
+		if (!Util.isNull(session) && !Util.isNull(session.getAttribute("member"))) {
+
+			// try {
+			//
+			// if (((Member) session.getAttribute("member")).getId() == Integer
+			// .parseInt(req.getParameter("writer_id"))) {
+			int result = service.updateReview(req.getParameter("toilet_id"), req.getParameter("writer_id"),
+					req.getParameter("review"), req.getParameter("score"));
+
+			if (result > 0) {
+				req.getRequestDispatcher(getUriForRedirectToDetail(req.getParameter("toilet_id"), req.getParameter("writer_id"))).forward(req,res);
+				return;
+
+			}
+			// }
+			// } catch (NumberFormatException e) {
+			// System.out.println("review > service > updateReview >
+			// parseInt(writer_id)");
+			// e.printStackTrace();
+			//
+			// }
+		}
+
+		res.sendRedirect("error.jsp");
 
 	}
+
+	private String getUriForRedirectToDetail(String toiletId, String memberId) {
+		StringBuilder builder = new StringBuilder();
+
+		builder.append("review?action=getReviews&toiletNum=").append(toiletId).append("&memberId=").append(memberId);
+		System.out.println("---- add or update: redirect ---");
+		System.out.println(builder.toString());
+		return builder.toString();
+	}
+
 }

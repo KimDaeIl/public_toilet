@@ -46,7 +46,6 @@ public class ToiletController extends HttpServlet implements IController {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("dd");
 		response.setCharacterEncoding("EUC-KR");
 		process(request, response);
 	}
@@ -74,14 +73,15 @@ public class ToiletController extends HttpServlet implements IController {
 			getBoroughs(req, res);
 			break;
 
+
 		default:
+			res.sendRedirect("error.jsp");
 		}
 
 	}
 
 	private void getToilets(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		ArrayList<Toilet> list = service.getAllToiletsInBorough(req.getParameter("gu"));
-		System.out.println("getToilets");
 
 		if (!list.isEmpty()) {
 			res.setContentType("application/json");
@@ -108,7 +108,6 @@ public class ToiletController extends HttpServlet implements IController {
 
 	private void getBoroughs(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		ArrayList<Borough> list = service.getBoroughList(req.getParameter("city"));
-		System.out.println("getBoroughs");
 
 		if (!list.isEmpty()) {
 			res.setContentType("application/json");
@@ -119,6 +118,8 @@ public class ToiletController extends HttpServlet implements IController {
 			res.sendRedirect("error.jsp");
 		}
 	}
+
+	
 
 	private String makeJson(ArrayList list) {
 		StringBuilder builder = new StringBuilder();

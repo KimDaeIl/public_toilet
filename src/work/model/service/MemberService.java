@@ -13,10 +13,13 @@ public class MemberService {
 
 	public Member signUp(String id, String pw, String nickname) {
 
-		if (isValidId(id) && isValidPw(pw) && isValidNickname(nickname)) {
+		if (isValidMemberId(id) && isValidPw(pw) && isValidNickname(nickname)) {
 
 			Member member = new Member(id.toUpperCase(), pw.toUpperCase(), nickname.toUpperCase());
-			if (dao.insert(member) > 0) {
+
+			int result = dao.insert(member);
+			if (result > 0) {
+				member.setId(result);
 				return member;
 			}
 
@@ -29,15 +32,24 @@ public class MemberService {
 		Member member = null;
 
 		if (isValidLoginInfo(id, pw)) {
-			member = dao.selectOne(id.toUpperCase(), pw.toUpperCase());
+			member = dao.selectOne(id.toUpperCase(), pw);
 		}
 
 		return member;
 
 	}
 
+	public int delete(String id, String pw) {
+
+		if (isValidMemberId(id) && isValidPw(pw)) {
+			return dao.delete(id.trim().toUpperCase(), pw.trim());
+		}
+
+		return 0;
+	}
+
 	public boolean isDuplicatedId(String id) {
-		if (isValidId(id)) {
+		if (isValidMemberId(id)) {
 			return !Util.isEqualsNull(dao.selectMemberId(id));
 		}
 
@@ -46,7 +58,7 @@ public class MemberService {
 
 	public boolean isValidLoginInfo(String id, String pw) {
 
-		if (!isValidId(id)) {
+		if (!isValidMemberId(id)) {
 			return false;
 		}
 
@@ -57,16 +69,15 @@ public class MemberService {
 		return true;
 	}
 
-	private boolean isValidId(String id) {
+	private boolean isValidMemberId(String id) {
 
 		if (Util.isNull(id) || id.isEmpty()) {
 			return false;
 		}
 
 		if (Util.isMatched("[A-Za-z]{1}[a-zA-Z0-9]+", id)) {
-			if (Util.isValidStringLength(id, 2, 16)) {
-				return true;
-			}
+			return Util.isValidStringLength(id, 2, 16);
+
 		}
 
 		return false;

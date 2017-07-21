@@ -1,7 +1,9 @@
 package work.model.dao;
 
+import work.Util.Util;
 import work.model.dto.Member;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,14 +23,21 @@ public class MemberDao extends BaseDao {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(
 					"INSERT INTO members(id, member_id, member_pw, nickname) values(seq_user_id.NEXTVAL, ?, ?, ?)");
+			// "INSERT INTO members(id, member_id, member_pw, nickname)
+			// values(seq_user_id.NEXTVAL, ?, ?, ?)");
 			pstmt.setString(1, member.getMemberId());
 			pstmt.setString(2, member.getMemberPw());
 			pstmt.setString(3, member.getNickname());
 
 			result = pstmt.executeUpdate();
-			conn.commit();
 
-			return result;
+			if (result > 0) {
+				
+				conn.commit();
+				member= selectOne(member.getMemberId(),member.getMemberPw());
+				result=member.getId();
+			}
+
 		} catch (SQLException e) {
 
 			e.printStackTrace();
@@ -47,6 +56,8 @@ public class MemberDao extends BaseDao {
 	}
 
 	public Member selectOne(String id, String pw) {
+		System.out.println(id);
+		System.out.println(pw);
 
 		Member member = null;
 		Connection conn = null;
@@ -65,7 +76,7 @@ public class MemberDao extends BaseDao {
 				member = new Member();
 				member.setId(rs.getInt("id"));
 				member.setMemberId(rs.getString("member_id"));
-				member.setMemberPw(rs.getString("member_pw"));
+				// member.setMemberPw(rs.getString("member_pw"));
 				member.setNickname(rs.getString("nickname"));
 				member.setEntryDate(rs.getString("entry_date"));
 			}
@@ -88,13 +99,14 @@ public class MemberDao extends BaseDao {
 	}
 
 	public String selectMemberId(String id) {
+
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
 		try {
 			conn = getConnection();
-			pstmt = conn.prepareStatement("SELECT * FROM members WHERE member_id=?");
+			pstmt = conn.prepareStatement("SELECT * FROM members WHERE member_id=? AND DELETED_AT IS NULL");
 			pstmt.setString(1, id.toUpperCase());
 
 			rs = pstmt.executeQuery();
@@ -118,6 +130,50 @@ public class MemberDao extends BaseDao {
 		}
 		return null;
 
+	}
+
+	public int delete(String id, String pw) {
+		Member member = selectOne(id, pw);
+		int result = 0;
+
+		if (Util.isNull(member)) {
+
+			return result;
+		} else {
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+
+			try {
+				conn = getConnection();
+				pstmt = conn.prepareStatement("UPDATE  members SET DELETED_AT=SYSDATE, MEMBER_ID=NULL WHERE id=?");
+				pstmt.setInt(1, member.getId());
+
+				result = pstmt.executeUpdate();
+
+				if (result > 0) {
+					conn.commit();
+
+				}
+
+			} catch (SQLException e) {
+
+				System.out.println("member > dao > delete");
+				e.printStackTrace();
+
+				try {
+					conn.rollback();
+				} catch (SQLException ee) {
+					System.out.println("member > dao > rollback");
+					ee.printStackTrace();
+				}
+
+			} finally {
+				close(null, pstmt, conn);
+
+			}
+		}
+
+		return result;
 	}
 
 	// public int delete(String id) {
