@@ -9,7 +9,7 @@ PUBLIC TOILET
 
   
 ## 개발 정보
-- ~~encoding: UTF-8, EUCKR~~
+- encoding: EUCKR
 - html, javascript, css, java, jsp, servlet
 - oracle express edition
 - apache tomcat
@@ -21,11 +21,9 @@ PUBLIC TOILET
 ## 업무 분담
 1. back-end  
 	* [김대일](https://github.com/KimDaeil)  
-	* 김미정  
 	  
 2. front-end  
-	* 이성진  
-	* 신승현  
+	* [신승현](https://github.com/rofhs12)  
   
   
 ## 개발 가이드 라인
